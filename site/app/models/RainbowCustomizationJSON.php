@@ -66,15 +66,6 @@ class RainbowCustomizationJSON extends AbstractModel {
     }
 
     /**
-     * Gets the benchmark percentages object
-     *
-     * @return object The benchmark percentages object
-     */
-    public function getBenchmarkPercent() {
-        return $this->benchmark_percent;
-    }
-
-    /**
      * Adds a benchmark to the display_benchmarks
      * If it already exists in the array no changes are made
      *
@@ -187,22 +178,6 @@ class RainbowCustomizationJSON extends AbstractModel {
         }
 
         $this->section->$sectionID = $label;
-    }
-
-
-    /**
-     * Add a benchmark percent
-     *
-     * @param string $benchmark The benchmark - this is the key for this json field
-     * @param float $percent The percent - this is the value for this json field
-     * @throws BadArgumentException The passed in percent was empty
-     */
-    public function addBenchmarkPercent($benchmark, $percent) {
-        if (empty($percent)) {
-            throw new BadArgumentException('The benchmark percent may not be empty.');
-        }
-
-        $this->benchmark_percent->$benchmark = (float) $percent;
     }
 
     /**

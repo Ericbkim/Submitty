@@ -97,9 +97,7 @@ window.onbeforeunload = function() {
 
     function rotate(){
         window.RENDER_OPTIONS.rotate += 90;
-        if (!window.RENDER_OPTIONS.studentPopup) {
-          localStorage.setItem('rotate', window.RENDER_OPTIONS.rotate);
-        }
+        localStorage.setItem('rotate', window.RENDER_OPTIONS.rotate);
         render(window.GENERAL_INFORMATION.gradeable_id, window.GENERAL_INFORMATION.user_id, window.GENERAL_INFORMATION.grader_id, window.GENERAL_INFORMATION.file_name, window.GENERAL_INFORMATION.file_path);
     }
 
@@ -128,9 +126,7 @@ window.onbeforeunload = function() {
         if(zoom_flag){
             $("a[value='zoomcustom']").text(parseInt(RENDER_OPTIONS.scale * 100) + "%");
             window.RENDER_OPTIONS.scale = zoom_level;
-            if (!window.RENDER_OPTIONS.studentPopup) {
-              localStorage.setItem('scale', window.RENDER_OPTIONS.scale);
-            }
+            localStorage.setItem('scale', window.RENDER_OPTIONS.scale);
             render(window.GENERAL_INFORMATION.gradeable_id, window.GENERAL_INFORMATION.user_id, window.GENERAL_INFORMATION.grader_id, window.GENERAL_INFORMATION.file_name, window.GENERAL_INFORMATION.file_path);
         }
     }

@@ -54,7 +54,6 @@ class ConfigurationController extends AbstractController {
             'auto_rainbow_grades'            => $this->core->getConfig()->getAutoRainbowGrades(),
             'queue_enabled'                  => $this->core->getConfig()->isQueueEnabled(),
             'queue_contact_info'             => $this->core->getConfig()->getQueueContactInfo(),
-            'queue_message'                  => $this->core->getConfig()->getQueueMessage(),
             'polls_enabled'                  => $this->core->getConfig()->isPollsEnabled(),
             'polls_pts_for_correct'          => $this->core->getConfig()->getPollsPtsForCorrect(),
             'polls_pts_for_incorrect'        => $this->core->getConfig()->getPollsPtsForIncorrect(),
@@ -145,9 +144,7 @@ class ConfigurationController extends AbstractController {
                     'display_custom_message',
                     'forum_enabled',
                     'regrade_enabled',
-                    'seating_only_for_instructor',
-                    'queue_enabled',
-                    'queue_contact_info'
+                    'seating_only_for_instructor'
                 ]
             )
         ) {

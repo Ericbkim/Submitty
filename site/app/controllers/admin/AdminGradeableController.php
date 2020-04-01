@@ -246,9 +246,7 @@ class AdminGradeableController extends AbstractController {
 
             'upload_config_url' => $this->core->buildCourseUrl(['autograding_config']) . '?g_id=' . $gradeable->getId(),
             'rebuild_url' => $this->core->buildCourseUrl(['gradeable', $gradeable->getId(), 'rebuild']),
-            'csrf_token' => $this->core->getCsrfToken(),
-            'peer' => $gradeable->isPeerGrading(),
-            'peer_grader_pairs' => $this->core->getQueries()->getPeerGradingAssignment($gradeable->getId())
+            'csrf_token' => $this->core->getCsrfToken()
         ]);
         $this->core->getOutput()->renderOutput(array('grading', 'ElectronicGrader'), 'popupStudents');
         $this->core->getOutput()->renderOutput(array('grading', 'ElectronicGrader'), 'popupMarkConflicts');

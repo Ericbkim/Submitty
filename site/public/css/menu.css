@@ -31,7 +31,7 @@
 
 #mobile-menu a, #mobile-menu .fa {
     text-decoration: none;
-    color: var(--btn-text-white);
+    color: var(--text-white);
     font-size: 20px;
     text-align: center;
     padding: 10px;
@@ -43,7 +43,7 @@
 }
 
 #mobile-menu li .selected, #mobile-menu li .selected i {
-    background: var(--default-white);
+    background: #FFF;
     color: var(--text-black);
     font-weight: bold;
 }
@@ -77,7 +77,7 @@
 #menu-exit {
     background: none;
     border: none;
-    color: var(--btn-text-white);
+    color: var(--text-white);
     font-size: 31px;
 }
 

@@ -84,30 +84,15 @@ class GradingQueue {
      * @param AutoGradedVersion $auto_graded_version
      * @return int The version's queue position, or GRADING if being graded, or NOT_QUEUED of not found
      */
-    public function getQueueStatusAGV(AutoGradedVersion $auto_graded_version) {
-        return $this->getQueueStatus(
-            $auto_graded_version->getGradedGradeable()->getGradeable()->getId(),
-            $auto_graded_version->getGradedGradeable()->getSubmitter()->getId(),
-            $auto_graded_version->getVersion()
-        );
-    }
-
-    /**
-     * Gets the position of the provided autograding Gradeable from the queue
-     * @param string $gradeableId
-     * @param string $submitterId
-     * @param int $version
-     * @return int The version's queue position, or GRADING if being graded, or NOT_QUEUED of not found
-     */
-    public function getQueueStatus($gradeableId, $submitterId, $version) {
+    public function getQueueStatus(AutoGradedVersion $auto_graded_version) {
         $this->ensureLoadedQueue();
 
         // Generate the queue file names
         $queue_file = implode(self::QUEUE_FILE_SEPARATOR, [
             $this->queue_file_prefix,
-            $gradeableId,
-            $submitterId,
-            $version
+            $auto_graded_version->getGradedGradeable()->getGradeable()->getId(),
+            $auto_graded_version->getGradedGradeable()->getSubmitter()->getId(),
+            $auto_graded_version->getVersion()
         ]);
         $grading_queue_file = self::GRADING_FILE_PREFIX . $queue_file;
         $vcs_queue_file = self::VCS_FILE_PREFIX . $queue_file;

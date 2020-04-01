@@ -73,8 +73,8 @@ a.btn {
 }
 
 .black-btn, .black-btn > i.fas {
-    color: var(--text-black) !important;
-    border-color: var(--text-black) !important;
+    color: #000 !important;
+    border-color: #000 !important;
 }
 
 .black-btn:hover, .black-btn > i.fas:hover {

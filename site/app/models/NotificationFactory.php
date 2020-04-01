@@ -1,7 +1,8 @@
 <?php
 
-namespace app\libraries;
+namespace app\models;
 
+use app\libraries\Core;
 use app\models\Email;
 use app\models\Notification;
 use app\models\User;
@@ -28,7 +29,7 @@ class NotificationFactory {
     /**
      * @param array $event
      */
-    public function onNewAnnouncement(array $event): void {
+    public function onNewAnnouncement(array $event) {
         $recipients = $this->core->getQueries()->getAllUsersIds();
         $notifications = $this->createNotificationsArray($event, $recipients);
         $this->sendNotifications($notifications);
@@ -41,7 +42,7 @@ class NotificationFactory {
     /**
      * @param array $event
      */
-    public function onNewThread(array $event): void {
+    public function onNewThread(array $event) {
         $recipients = $this->core->getQueries()->getAllUsersWithPreference("all_new_threads");
         $recipients[] = $this->core->getUser()->getId();
         $recipients = array_unique($recipients);
@@ -60,7 +61,7 @@ class NotificationFactory {
      * notifies parent authors, people who want to know about all posts, and people who want to know about new posts in threads they have posted
      * @param array $event
      */
-    public function onNewPost(array $event): void {
+    public function onNewPost(array $event) {
         $current_user_id = $this->core->getUser()->getId();
         $post_id = $event["post_id"];
         $thread_id = $event["thread_id"];
@@ -89,7 +90,7 @@ class NotificationFactory {
      * handles the event of a post deleted, undeleted, edited and merged
      * @param array $event
      */
-    public function onPostModified(array $event): void {
+    public function onPostModified(array $event) {
         $notification_recipients = $this->core->getQueries()->getAllUsersWithPreference($event['preference']);
         $notification_recipients[] = $event['recipient'];
         $notification_recipients[] = $this->core->getUser()->getId();
@@ -113,7 +114,7 @@ class NotificationFactory {
      * @param array $event
      * @param array $recipients
      */
-    public function onTeamEvent(array $event, array $recipients): void {
+    public function onTeamEvent(array $event, array $recipients) {
         $current_user_id = $this->core->getUser()->getId();
         $notification_recipients = [$current_user_id];
         $email_recipients = [$current_user_id];
@@ -144,11 +145,11 @@ class NotificationFactory {
     // ***********************************HELPERS***********************************
 
     /**
-     * @param array $event
-     * @param array $recipients
+     * @param $event
+     * @param $recipients
      * @return array
      */
-    private function createNotificationsArray(array $event, array $recipients): array {
+    private function createNotificationsArray($event, $recipients) {
         $event['sender_id'] = $this->core->getUser()->getId();
         $notifications = array();
         foreach ($recipients as $recipient) {
@@ -159,12 +160,11 @@ class NotificationFactory {
     }
 
     /**
-     * @param array $event
-     * @param array $recipients
-     * @param bool $author
+     * @param $event
+     * @param $recipients
      * @return array of email objects
      */
-    private function createEmailsArray(array $event, array $recipients, bool $author): array {
+    private function createEmailsArray($event, $recipients, $author) {
         $emails = array();
         foreach ($recipients as $recipient) {
             //Checks if a url is in metadata and sets $relevant_url null or that url
@@ -188,9 +188,10 @@ class NotificationFactory {
 
     // ***********************************SENDERS***********************************
     /**
-     * @param array $notifications
+     * @param array $event
+     * @param array $recipients
      */
-    public function sendNotifications(array $notifications): void {
+    public function sendNotifications(array $notifications) {
         if (empty($notifications)) {
             return;
         }
@@ -222,7 +223,7 @@ class NotificationFactory {
      * prepare array of Email objects as param array
      * @param array $emails
      */
-    public function sendEmails(array $emails): void {
+    public function sendEmails(array $emails) {
         if (!$this->core->getConfig()->isEmailEnabled()) {
             throw new LogicException("Email is not enabled");
         }

@@ -1564,55 +1564,25 @@ $.fn.isInViewport = function() {                                        // jQuer
 };
 
 function checkSidebarCollapse() {
+    $(".preload").removeClass("preload");//.preload must be removed to allow the animation to work
     var size = $(document.body).width();
     if (size < 1150) {
-        document.cookie = "collapse_sidebar=true;";
+        localStorage.setItem('sidebar', 'true');
         $("aside").toggleClass("collapsed", true);
     }
     else{
-        document.cookie = "collapse_sidebar=false;";
+        localStorage.setItem('sidebar', 'false');
         $("aside").toggleClass("collapsed", false);
     }
 }
 
-//Changes the theme from light to dark mode or the reverse
-//if mode='black' it will toggle the black mode instead of the normal mode
-function toggleTheme(mode='normal'){
-  if(mode==='normal'){
-    if((!localStorage.getItem("theme") && document.documentElement.getAttribute("data-theme") !== "dark") || localStorage.getItem("theme") === "light"){
-        localStorage.setItem("theme", "dark");
-        document.documentElement.setAttribute("data-theme", "dark");
-    }else{
-      localStorage.setItem("theme", "light");
-      document.documentElement.setAttribute("data-theme", "light");
-    }
-  }else if(mode === 'black'){
-    if(localStorage.getItem('black_mode') !== 'black'){
-        localStorage.setItem("black_mode", "black");
-        document.documentElement.setAttribute("data-black_mode", "black");
-    }else{
-      localStorage.setItem("black_mode", "");
-      document.documentElement.setAttribute("data-black_mode", "");
-    }
-  }
-}
-$(document).ready(function() {
-  if(localStorage.getItem("theme") === "dark"){
-    $('#theme_change').prop('checked', true);
-  }else if(localStorage.getItem("theme") === null && window.matchMedia("(prefers-color-scheme: dark)").matches){
-    $('#theme_change').prop('checked', true);
-  }
-  if(localStorage.getItem("black_mode") === "black"){
-    $('#theme_change_black').prop('checked', true);
-  }
-});
-
 //Called from the DOM collapse button, toggle collapsed and save to localStorage
 function toggleSidebar() {
+    $(".preload").removeClass("preload");//.preload must be removed to allow the animation to work
     var sidebar = $("aside");
     var shown = sidebar.hasClass("collapsed");
 
-    document.cookie = "collapse_sidebar=" + (!shown).toString() + ";";
+    localStorage.setItem('sidebar', (!shown).toString());
     sidebar.toggleClass("collapsed", !shown);
 }
 
@@ -1632,6 +1602,13 @@ $(document).ready(function() {
             }
         }
     });
+
+    //Remember sidebar preference
+    if (localStorage.getItem('sidebar') !== "") {
+        $("aside").toggleClass("collapsed", localStorage.getItem('sidebar') === "true");
+        //Once the sidebar is set the page can be unhidden
+        $("#submitty-body").removeClass( "invisible" )
+    }
 
     //If they make their screen too small, collapse the sidebar to allow more horizontal space
     $(document.body).resize(function() {

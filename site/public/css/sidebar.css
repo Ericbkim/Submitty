@@ -2,6 +2,11 @@ aside {
     display: none;
 }
 
+/* Used to keep the page invisible just long enough for the sidebar to close */
+.invisible{
+  visibility: hidden;
+}
+
 @media (min-width: 541px) {
     aside {
         display: block;
@@ -9,9 +14,10 @@ aside {
         padding-top: 30px;
         width: 250px;
         min-width: 250px;
+        z-index: 1;
     }
 
-    aside{
+    aside:not(.preload){
       transition: all 0.3s ease-out;
     }
 
@@ -27,7 +33,7 @@ aside {
         margin: 0 0 0 15px;
     }
 
-    aside i{
+    aside i:not(.preload){
       transition: margin 0.3s ease-out;
     }
 
@@ -64,7 +70,7 @@ aside {
     }
 
     aside a .icon-title:hover {
-        color: var(--sidebar-hover-text);
+        color: #002334;
     }
 
     aside a .icon-title:active {
@@ -102,9 +108,5 @@ aside {
         font-size: 12px;
         position: absolute;
         margin: 12px 0 0 32px;
-    }
-
-    [data-theme="dark"] aside ul {
-      background-color: var(--background-blue);
     }
 }

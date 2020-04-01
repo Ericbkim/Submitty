@@ -42,18 +42,18 @@
 }
 
 .bucket_detail_div:nth-child(2n){
-    background-color: var(--standard-mediumorchid);
+    background-color: mediumorchid;
 }
 
 .bucket_detail_div:nth-child(2n+1){
-    background-color: var(--standard-lightskyblue);
+    background-color: lightskyblue;
 }
 
 #save_status_container
 {
     display: inline-block;
     width: 100%;
-    background-color: var(--standard-hover-light-gray);
+    background-color: lightgrey;
     border: none;
 }
 

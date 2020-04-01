@@ -81,7 +81,6 @@ use app\controllers\admin\AdminGradeableController;
  * @method void setDiscussionThreadId($discussion_thread_id)
  * @method int getActiveRegradeRequestCount()
  * @method void setHasDueDate($has_due_date)
- * @method object[] getPeerGradingPairs()
  */
 class Gradeable extends AbstractModel {
     /* Enum range for grader_assignment_method */
@@ -134,9 +133,6 @@ class Gradeable extends AbstractModel {
      * that contains filename, file path, and the file size.
      */
     private $split_pdf_files = null;
-    
-    /** @prop @var array */
-    protected $peer_grading_pairs = [];
 
     /* Properties exclusive to numeric-text/checkpoint gradeables */
 
@@ -233,9 +229,6 @@ class Gradeable extends AbstractModel {
         $this->setMinGradingGroup($details['min_grading_group']);
         $this->setSyllabusBucket($details['syllabus_bucket']);
         $this->setTaInstructions($details['ta_instructions']);
-        if (array_key_exists('peer_graders_list', $details)) {
-            $this->setPeerGradersList($details['peer_graders_list']);
-        }
 
         if ($this->getType() === GradeableType::ELECTRONIC_FILE) {
             $this->setAutogradingConfigPath($details['autograding_config_path']);
@@ -469,31 +462,6 @@ class Gradeable extends AbstractModel {
         // Assume that if no late days provided that there should be zero of them;
         $parsedDates['late_days'] = intval($dates['late_days'] ?? 0);
         return $parsedDates;
-    }
-
-    public function setPeerGradersList($input) {
-        $bad_rows = [];
-        foreach ($input as $row_num => $vals) {
-            if ($this->core->getQueries()->getUserById($vals["student"]) == null) {
-                array_push($bad_rows, ($vals["student"]));
-            }
-            if ($this->core->getQueries()->getUserById($vals["grader"]) == null) {
-                array_push($bad_rows, ($vals["grader"]));
-            }
-        }
-        if (!empty($bad_rows)) {
-            $msg = "The given user id is not valid: ";
-            array_walk($bad_rows, function ($val) use (&$msg) {
-                $msg .= " {$val}";
-            });
-            $this->core->addErrorMessage($msg);
-        }
-        $this->core->getQueries()->clearPeerGradingAssignment($this->getId());
-        foreach ($input as $row_num => $vals) {
-            $this->core->getQueries()->insertPeerGradingAssignment($vals["grader"], $vals["student"], $this->getId());
-            $this->modified = true;
-            $this->peer_grading_pairs = $this->core->getQueries()->getPeerGradingAssignment($this->getId());
-        }
     }
 
     /**
@@ -1558,20 +1526,9 @@ class Gradeable extends AbstractModel {
      */
     public function getGradingSectionsForUser(User $user) {
         if ($this->isPeerGrading() && $user->getGroup() === User::GROUP_STUDENT) {
-            if ($this->isTeamAssignment()) {
-                $users = $this->core->getQueries()->getUsersById($this->core->getQueries()->getPeerAssignment($this->getId(), $user->getId()));
-                $teams = [];
-                foreach ($users as $u) {
-                    $teamToAdd = $this->core->getQueries()->getTeamByGradeableAndUser($this->getId(), $u->getId());
-                    $teams[$teamToAdd->getId()] = $this->core->getQueries()->getTeamByGradeableAndUser($this->getId(), $u->getId());
-                }
-                $g_section = new GradingSection($this->core, false, "Peer", [$user], null, $teams);
-                return [$g_section];
-            }
-            $users = $this->core->getQueries()->getUsersById($this->core->getQueries()->getPeerAssignment($this->getId(), $user->getId()));
+            $users = $this->core->getQueries()->getPeerAssignment($this->getId(), $user->getId());
             //TODO: Peer grading team assignments
-            $g_section = new GradingSection($this->core, false, "Peer", [$user], $users, null);
-            return [$g_section];
+            return [new GradingSection($this->core, false, "Peer", [$user], $users, [])];
         }
         else {
             $users = [];
