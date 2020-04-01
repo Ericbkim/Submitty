@@ -55,7 +55,7 @@ class PollModel extends AbstractModel {
         return $this->status == "closed";
     }
 
-    public function hasEnded() {
+    public function isEnded() {
         return $this->status == "ended";
     }
 

@@ -27,6 +27,8 @@
                                     <button type="submit" class="btn btn-success"> Edit Answer
                                 {% endif %}
                                 </button>
+                            {% elseif poll.isEnded() %}
+                                <button type="submit" class="btn btn-primary"> View Poll
                             {% else %}
                                 Closed
                             {% endif %}
@@ -58,7 +60,7 @@
                         <form method="post" action="{{ base_url }}/viewPoll">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                             <input type="hidden" name="poll_id" value="{{ poll.getID() }}"/>
-                            <button type="submit" class="btn btn-primary"> View Results
+                            <button type="submit" class="btn btn-primary"> View Poll
                             </button>
                         </form>
                     </td>

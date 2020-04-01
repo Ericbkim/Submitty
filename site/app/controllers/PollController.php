@@ -96,7 +96,7 @@ class PollController extends AbstractController {
         $answers = array();
         for ($i = 0; $i < $response_count; $i++) {
             $responses[] = $_POST["response_" . $i];
-            if ($_POST["is_correct_" . $i] == "on") {
+            if (isset($_POST["is_correct_" . $i]) and $_POST["is_correct_" . $i] == "on") {
                 $answers[] = $_POST["response_" . $i];
             }
         }
@@ -113,7 +113,33 @@ class PollController extends AbstractController {
     * @return Response
     */
     public function openPoll() {
-        $this->core->getQueries()->setPollOpen($_POST["poll_id"], $_POST["open"]);
+        $this->core->getQueries()->openPoll($_POST["poll_id"]);
+
+        return Response::RedirectOnlyResponse(
+            new RedirectResponse($this->core->buildCourseUrl(['polls']))
+        );
+    }
+
+    /**
+    * @Route("/{_semester}/{_course}/polls/setClosed", methods={"POST"})
+    * @AccessControl(role="INSTRUCTOR")
+    * @return Response
+    */
+    public function closePoll() {
+        $this->core->getQueries()->closePoll($_POST["poll_id"]);
+
+        return Response::RedirectOnlyResponse(
+            new RedirectResponse($this->core->buildCourseUrl(['polls']))
+        );
+    }
+
+    /**
+    * @Route("/{_semester}/{_course}/polls/setEnded", methods={"POST"})
+    * @AccessControl(role="INSTRUCTOR")
+    * @return Response
+    */
+    public function endPoll() {
+        $this->core->getQueries()->endPoll($_POST["poll_id"]);
 
         return Response::RedirectOnlyResponse(
             new RedirectResponse($this->core->buildCourseUrl(['polls']))
@@ -134,6 +160,12 @@ class PollController extends AbstractController {
         }
         if ($poll->isOpen()) {
             $this->core->getQueries()->submitResponse($_POST["poll_id"], $_POST["answer"]);
+        }
+        else {
+            $this->core->addErrorMessage("Closed Poll");
+            return Response::RedirectOnlyResponse(
+                new RedirectResponse($this->core->buildCourseUrl(['polls']))
+            );
         }
 
         return Response::RedirectOnlyResponse(

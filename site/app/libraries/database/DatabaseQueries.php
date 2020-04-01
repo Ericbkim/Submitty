@@ -6158,7 +6158,7 @@ AND gc_id IN (
     //// BEGIN ONLINE POLLING QUERIES ////
 
     public function addNewPoll($poll_name, $question, array $responses, array $answers, $release_date) {
-        $this->course_db->query("INSERT INTO polls(name, question, open, release_date) VALUES (?, ?, ?, ?)", array($poll_name, $question, "closed", $release_date));
+        $this->course_db->query("INSERT INTO polls(name, question, status, release_date) VALUES (?, ?, ?, ?)", array($poll_name, $question, "closed", $release_date));
         $this->course_db->query("SELECT max(poll_id) from polls");
         $id = $this->course_db->rows()[0]['max'];
         foreach ($responses as $response) {
@@ -6170,15 +6170,15 @@ AND gc_id IN (
     }
 
     public function endPoll($poll_id) {
-        $this->course_db->query("UPDATE polls SET open = 'ended' where poll_id = ?", array($poll_id));
+        $this->course_db->query("UPDATE polls SET status = 'ended' where poll_id = ?", array($poll_id));
     }
 
     public function closePoll($poll_id) {
-        $this->course_db->query("UPDATE polls SET open = 'closed' where poll_id = ?", array($poll_id));
+        $this->course_db->query("UPDATE polls SET status = 'closed' where poll_id = ?", array($poll_id));
     }
 
     public function openPoll($poll_id) {
-        $this->course_db->query("UPDATE polls SET open = 'open' where poll_id = ?", array($poll_id));
+        $this->course_db->query("UPDATE polls SET status = 'open' where poll_id = ?", array($poll_id));
     }
 
     public function getPolls() {
@@ -6222,7 +6222,7 @@ AND gc_id IN (
 
     public function getFuturePolls() {
         $polls = array();
-        $this->course_db->query("SELECT * from polls where release_date > ? and status=false order by poll_id DESC", array(date("Y-m-d")));
+        $this->course_db->query("SELECT * from polls where release_date > ? and status='closed' order by poll_id DESC", array(date("Y-m-d")));
         $polls_rows = $this->course_db->rows();
         $user = $this->core->getUser()->getId();
 
