@@ -5184,6 +5184,21 @@ AND gc_id IN (
         return $this->course_db->row()['exists'] ?? false;
     }
 
+
+    /**
+     * Gets a count of the amount of submissions for a particular gradeable
+     * 
+     * @param \app\models\gradeable\Gradeable $gradeable
+     * @return integer
+     */
+    public function getCountOfSubmissions(Gradeable $gradeable)
+    {
+        $this->course_db->query('SELECT EXISTS (SELECT g_id FROM electronic_gradeable_data WHERE g_id=?', [$gradeable->getId()]);
+        return intval($this->course_db->row()['exists']);
+
+    }
+
+
     /**
      * Get the active version for all given submitter ids. If they do not have an active version,
      * their version will be zero.

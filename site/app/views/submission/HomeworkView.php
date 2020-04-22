@@ -788,7 +788,8 @@ class HomeworkView extends AbstractView {
             if ($version_instance->isQueued()) {
                 $param = array_merge($param, [
                     'queue_pos' => $version_instance->getQueuePosition(),
-                    'queue_total' => $this->core->getGradingQueue()->getQueueCount()
+                    'queue_total' => $this->core->getGradingQueue()->getQueueCount(),
+                    'sub_total' => $this->core->getQueries()->getCountOfSubmissions($gradeable)
                 ]);
             }
         }
